@@ -8,4 +8,3 @@ type MessageRepository interface {
 	Add(msg broker.Message) (int, error)
 	Get(id int) (broker.Message, error)
 }
-
