@@ -4,7 +4,6 @@ import (
 	"sync"
 	"therealbroker/pkg/broker"
 	"therealbroker/repository/model"
-	"time"
 )
 
 type InMemoryMessageRepository struct {
@@ -35,12 +34,4 @@ func (imr *InMemoryMessageRepository) Get(id int) (broker.Message, error) {
 		}
 	}
 	return broker.Message{}, broker.ErrInvalidID
-}
-
-func convertDtoToDataModel(inputDto broker.Message) model.Message {
-	return model.Message{
-		Body:           inputDto.Body,
-		ExpirationTime: time.Now().Add(inputDto.Expiration),
-		Expiration:     inputDto.Expiration,
-	}
 }
