@@ -23,6 +23,15 @@ var (
 		Name: "method_error_count",
 		Help: "counter error of each method",
 	}, []string{"method"})
+	MethodDuration = promauto.NewSummaryVec(prometheus.SummaryOpts{
+		Name: "method_duration",
+		Help: "calculating the latency of grpc calls",
+		Objectives: map[float64]float64{
+			0.5:  0.05,
+			0.9:  0.01,
+			0.99: 0.001,
+		},
+	}, []string{"method"})
 )
 
 func AddPrometheus() {

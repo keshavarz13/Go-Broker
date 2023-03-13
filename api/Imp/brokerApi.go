@@ -20,6 +20,8 @@ type server struct {
 
 func (s *server) Publish(ctx context.Context, in *proto.PublishRequest) (*proto.PublishResponse, error) {
 	prometheus.MethodCalls.WithLabelValues("Publish").Inc()
+	currentTime := time.Now()
+	defer prometheus.MethodDuration.WithLabelValues("Publish").Observe(float64(time.Since(currentTime).Nanoseconds()))
 	result, err := s.broker.Publish(ctx, in.Subject, broker.Message{
 		Expiration: time.Second * time.Duration(in.ExpirationSeconds), Body: string(in.Body),
 	})
@@ -55,6 +57,8 @@ func (s *server) Subscribe(in *proto.SubscribeRequest, srv proto.Broker_Subscrib
 
 func (s *server) Fetch(ctx context.Context, in *proto.FetchRequest) (*proto.MessageResponse, error) {
 	prometheus.MethodCalls.WithLabelValues("Fetch").Inc()
+	currentTime := time.Now()
+	defer prometheus.MethodDuration.WithLabelValues("Fetch").Observe(float64(time.Since(currentTime).Nanoseconds()))
 	result, err := s.broker.Fetch(ctx, in.Subject, int(in.Id))
 	if err != nil {
 		prometheus.MethodError.WithLabelValues("Fetch").Inc()
