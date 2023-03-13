@@ -19,7 +19,7 @@ func NewModule() broker.Broker {
 	module := Module{
 		isClosed:    false,
 		subscribers: make(map[string][]*chan broker.Message),
-		repository:  repository.CreatePostgresMessageRepository(),
+		repository:  repository.CreateInMemoryMessageRepository(),
 	}
 	return &module
 }
