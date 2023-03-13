@@ -3,22 +3,22 @@ package broker
 import (
 	"context"
 	"sync"
-	"therealbroker/Repository"
 	"therealbroker/pkg/broker"
+	"therealbroker/repository"
 )
 
 type Module struct {
 	queueLock   sync.Mutex
 	isClosed    bool
 	subscribers map[string][]*chan broker.Message
-	repository  Repository.MessageRepository
+	repository  repository.MessageRepository
 }
 
 func NewModule() broker.Broker {
 	module := Module{
 		isClosed:    false,
 		subscribers: make(map[string][]*chan broker.Message),
-		repository:  Repository.CreateInMemoryMessageRepository(),
+		repository:  repository.CreateInMemoryMessageRepository(),
 	}
 	return &module
 }
