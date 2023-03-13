@@ -2,10 +2,10 @@ package main
 
 import (
 	apiImp "therealbroker/api/Imp"
-	modules "therealbroker/modules"
+	"therealbroker/pkg/prometheus"
 )
 
 func main() {
-	go modules.AddPrometheus()
+	go prometheus.AddPrometheus()
 	apiImp.RunGrpcServer()
 }
