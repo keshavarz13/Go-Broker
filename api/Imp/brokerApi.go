@@ -33,7 +33,6 @@ func (s *server) Subscribe(in *proto.SubscribeRequest, srv proto.Broker_Subscrib
 			srv.Send(&proto.MessageResponse{Body: []byte(msg.Body)})
 		}
 	}
-	return nil
 }
 
 func (s *server) Fetch(ctx context.Context, in *proto.FetchRequest) (*proto.MessageResponse, error) {
