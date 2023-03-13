@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Message struct {
-	id             int
+	ID             int
 	Body           string
 	ExpirationTime time.Time
 	Expiration     time.Duration
