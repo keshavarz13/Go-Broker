@@ -19,7 +19,7 @@ func NewModule() broker.Broker {
 	module := Module{
 		isClosed:    false,
 		subscribers: make(map[string][]*chan broker.Message),
-		repository:  repository.CreateInMemoryMessageRepository(),
+		repository:  repository.CreatePostgresMessageRepository(),
 	}
 	return &module
 }
@@ -40,16 +40,11 @@ func (m *Module) Publish(ctx context.Context, subject string, msg broker.Message
 	if eErr != nil {
 		return id, eErr
 	}
-	m.queueLock.RLock()
 
 	if msg.IsPersistable() {
 		id, _ = m.repository.Add(msg)
 	}
-	for _, element := range m.subscribers[subject] {
-		// log.Println("im in publish method")
-		*element <- msg
-	}
-	m.queueLock.RUnlock()
+	m.sendToSubscribers(subject, msg)
 	return id, nil
 }
 
@@ -80,4 +75,12 @@ func (m *Module) checkEnablity() error {
 		return broker.ErrUnavailable
 	}
 	return nil
+}
+
+func (m *Module) sendToSubscribers(subject string, msg broker.Message) {
+	m.queueLock.RLock()
+	for _, element := range m.subscribers[subject] {
+		*element <- msg
+	}
+	m.queueLock.RUnlock()
 }

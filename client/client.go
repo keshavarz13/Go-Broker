@@ -17,7 +17,7 @@ var letters = []rune("abcdefghijklmnopqrstuvwxyz")
 func Publish(client api.BrokerClient) {
 	_, err := client.Publish(context.Background(), &api.PublishRequest{
 		Subject:           "zzzzz",
-		Body:              []byte("t"),
+		Body:              []byte("hi my dear friends!"),
 		ExpirationSeconds: 2000,
 	})
 	if err != nil {
@@ -48,22 +48,11 @@ func main() {
 
 	client := api.NewBrokerClient(conn)
 
-	ch, _ := client.Subscribe(context.Background(), &api.SubscribeRequest{Subject: "zzzzz"})
-	go func() {
-		for {
-			response, err := ch.Recv()
-			log.Println("recive: ", response)
-			if err != nil {
-				log.Println(err)
-			}
-		}
-	}()
-
 	for i := 0; i < VUs; i++ {
 		go func() {
 			for j := 0; j < REQUESTS; j++ {
 				Publish(client)
-				Fetch(client)
+				// Fetch(client)
 			}
 		}()
 	}

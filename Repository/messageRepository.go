@@ -13,8 +13,7 @@ type MessageRepository interface {
 
 func convertDtoToDataModel(inputDto broker.Message) model.Message {
 	return model.Message{
-		// Body:           inputDto.Body,
-		Body:           "foo",
+		Body:           inputDto.Body,
 		ExpirationTime: time.Now().Add(inputDto.Expiration),
 		Expiration:     inputDto.Expiration,
 	}
