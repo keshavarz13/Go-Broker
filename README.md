@@ -1,25 +1,51 @@
-# Welcome project for newcomers!
+# Go Broker: A childish broker implemented by golang!
 
-# Introduction
-In this project you have to implement a message broker, based on `broker.Broker`
-interface. There are unit tests to specify requirements and also validate your implementation.
+This message broker is a software that enables programs, systems and services to communicate with each other and exchange information over gRPC. 
+Broker can have several topics and each message published to certain topic will be broadcasted
+to all subscribers to that topic.
 
-# Roadmap
-- [ ] Implement `broker.Broker` interface and pass all tests
-- [ ] Add basic logs and prometheus metrics
-  - Metrics for each RPCs:
-    - `method_count` to show count of failed/successful RPC calls
-    - `method_duration` for latency of each call, in 99, 95, 50 quantiles
-    - `active_subscribers` to display total active subscriptions
-  - Env metrics:
-    - Metrics for your application memory, cpu load, cpu utilization, GCs
-- [ ] Implement gRPC API for the broker and main functionalities
-- [ ] Create *dockerfile* and *docker-compose* files for your deployment
-- [ ] Deploy your app with the previous `docker-compose` on a remote machine
-- [ ] Deploy your app on K8
+Features of this broker:
+- The possibility of saving messages using the `PostgreSQL`
+- The possibility of using inMemory mode
+- Ability to transmit more than 21 thousand messages per second in persistent mode
+- Using `Prometheus` to measure broker performance metrics
 
-# Phase 2 Evaluation
-We run our gRPC client that implemented the `broker.proto` against your deployed broker application.
+The broker run on port 5100 and prometheus metrics can be accessed from :9000/metrics
 
-As it should function properly ( like the unit tests ), we expect the provided metrics to display a good observation, and if
-anything unexpected happened, you could diagnose your app, using the logs and other tools.
+## RPCs Description
+- Publish Requst
+```protobuf
+message PublishRequest {
+  string subject = 1;
+  bytes body = 2;
+  int32 expirationSeconds = 3;
+}
+```
+- Fetch Request
+```protobuf
+message FetchRequest {
+  string subject = 1;
+  int32 id = 2;
+}
+```
+- Subscribe Request
+```protobuf
+message SubscribeRequest {
+  string subject = 1;
+}
+```
+- RPC Service
+```protobuf
+service Broker {
+  rpc Publish (PublishRequest) returns (PublishResponse);
+  rpc Subscribe(SubscribeRequest) returns (stream MessageResponse);
+  rpc Fetch(FetchRequest) returns (MessageResponse);
+}
+```
+
+# How to Run it?
+## docker
+```shell
+chmod +x run.sh
+./run.sh
+```
