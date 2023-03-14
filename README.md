@@ -44,7 +44,12 @@ service Broker {
 ```
 
 # How to Run it?
-## docker
+You can directly use Docker to run this broker:
+```shell
+docker build -t my-broker . 
+docker run -p 9000:9000 -p 5100:5100 my-broker
+```
+Or you can run the broker by running the following command:
 ```shell
 chmod +x run.sh
 ./run.sh
